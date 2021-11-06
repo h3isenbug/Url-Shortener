@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  url-shortener:
+    hostname: url-shortener
+    build:
+      target: build
+      context: .
+      cache_from:
+        - h3isenbug/url-shortener:build
+    image: h3isenbug/url-shortener:build
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - test.env
+    extra_hosts:
+      - short.ir:127.0.0.1
+      - s3t.ir:127.0.0.1
+
+  redis:
+    hostname: redis
+    image: "redis:alpine"
+
+  postgres:
+    hostname: postgres
+    image: postgres:13
+    ports:
+      - '5432'
+    environment:
+      POSTGRES_DB: url_shortener
+      POSTGRES_USER: hamidreza
+      POSTGRES_PASSWORD: kalantari
